@@ -27,7 +27,7 @@ class Kettler extends EventEmitter{
     this.intervalID
     this.port = new SerialPort(options.path,{baudRate: 9600})
     this.parser = this.port.pipe(new ReadLine())
-    this.parser.on("data",this.portListener)
+    this.parser.on("data",this.portListener.bind(this))
   }
   async start(){
     await this.reset()
