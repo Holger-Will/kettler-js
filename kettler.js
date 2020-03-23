@@ -27,6 +27,7 @@ class Kettler extends EventEmitter{
     this.intervalID
     this.port = new SerialPort(options.path,{baudRate: 9600})
     this.parser = this.port.pipe(new ReadLine())
+    this.parser.on("data",this.portListener)
   }
   async start(){
     await this.reset()
@@ -77,7 +78,6 @@ function send(command, port){
     const copy = tee(port)[0]
     const parser = copy.pipe(new ReadLine())
     const handler = (x)=>{
-      console.log(x)
         copy.unpipe(parser)
         resolve(x)
       }
