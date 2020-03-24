@@ -36,7 +36,7 @@ class Kettler extends EventEmitter{
     }.bind(this),this.interval)
   }
   stop(){
-    clearInterVal(this.intervalID)
+    clearInterval(this.intervalID)
   }
   async reset(){
     await send("RS",this.port)
@@ -79,9 +79,12 @@ function send(command, port){
     const parser = copy.pipe(new ReadLine())
     const handler = (x)=>{
         copy.unpipe(parser)
+        parser.removeAllListeners()
+        delete parser
+        delete copy
         resolve(x)
       }
-    parser.on("data",handler)
+    parser.once("data",handler)
     port.write(command+"\n")
     //copy.unpipe(parser)
   })
